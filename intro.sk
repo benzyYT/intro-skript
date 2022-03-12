@@ -1,0 +1,274 @@
+# ACHTUNG das Skript hat ein integriertes Spawn System. Mit /intro setspawn kann der Spawn 
+# gesetzt werden, so wird man beim joinen immer zum Spawn tpt.
+
+
+
+
+
+#																	  #
+# 								Bei Fragen							  #
+# 				          Discord: 	benzyツ#8191			          #
+#																	  #
+
+
+
+
+
+
+options:
+	message1: &aTest 1
+	message2: &aBenzy 2
+	message3: &aLOL 3
+	message4: &aNachricht 4
+	
+	gamemode: survival 		# Gamemode nach dem Intro und beim joinen (Creative, Survival, Spectator, Adventure)
+	time: 5 				# Zeit in Sekunden zwischen den Intros
+
+	spielermsg: &bBitte gib einen Spieler an&7. &8[&c/intro reset <name>&8]
+	spawnmsg: &bDer Spawn muss gesetzt sein&7. &8[&c/intro setspawn&8]
+	locationmsg1: &bDie Location &61 &bdes Intros muss gesetzt sein&7. &8[&c/intro setloc 1&8]
+	locationmsg2: &bLocation &62-4 &bsind optional&7.
+	onlinemsg: &bDieser Spieler ist nicht online&7. &8[&c/intro reset <name>&8]
+	resetmsg: &bDas Intro von %arg-2% wurde zurückgesetzt.
+	numbermsg: &bBitte gib eine Nummer an&7.
+	locmsg: &bLocation gesetzt&7. &6%arg-2%
+	rmmsg: &bLocation entfernt&7. &6%arg-2%
+	setmsg: &bDer Spawn wurde gesetzt&7.
+	kick1: &bDu wurdest gekickt 		# Zeile 1 in der Kicknachricht
+	kick2: &cDein Intro wurde resettet  # Zeile 2 in der Kicknachricht
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Bearbeite hier nichts, wenn du nicht weißt was du tust.
+on load:
+	send "&b&m--------------------------" to console
+	send "&b" to console
+	send "&bDas Introskript wurde geladen" to console
+	send "&b" to console
+	send "&b&m--------------------------" to console
+
+on join:
+	if {einfuehrung.%player%} is true:
+		teleport player to {intro.spawn}
+		set player's gamemode to {@gamemode}
+		reset player's walk speed
+		reset player's fly speed
+
+on join:
+	set join message to ""
+	if {intro.spawn} is not set:
+		player has permission "setloc":
+			send "&b&m--------------------------"
+			send "&b"
+			send "{@spawnmsg}"
+			send "&b"
+			send "&b&m--------------------------"
+	else:
+		if {loc1} is not set:
+			player has permission "setloc":
+				send "&b&m--------------------------"
+				send "&b"
+				send "{@locationmsg1}"
+				send "{@locationmsg2}"
+				send "&b"
+				send "&b&m--------------------------"
+		else:
+			if {einfuehrung.%player%} is not set:
+				set {einfuehrung.%player%} to true
+				teleport player to {loc1}
+				send "{@message1}" to player
+				set player's gamemode to spectator
+				set player's walk speed to 0
+				set player's fly speed to 0
+				wait {@time} seconds
+				if {loc2} is set:
+					teleport player to {loc2}
+					send "{@message2}"
+					set player's gamemode to spectator
+					set player's walk speed to 0
+					set player's fly speed to 0
+					wait {@time} seconds
+					if {loc3} is set:
+						teleport player to {loc3}
+						send "{@message3}"
+						set player's gamemode to spectator
+						set player's walk speed to 0
+						set player's fly speed to 0
+						wait {@time} seconds
+						if {loc4} is set:
+							teleport player to {loc4}
+							send "{@message4}"
+							set player's gamemode to spectator
+							set player's walk speed to 0
+							set player's fly speed to 0
+							wait {@time} seconds
+							set player's gamemode to {@gamemode}
+							reset player's walk speed
+							reset player's fly speed
+							teleport player to {intro.spawn}
+						else:
+							set player's gamemode to {@gamemode}
+							reset player's walk speed
+							reset player's fly speed
+							teleport player to {intro.spawn}
+					
+					else:
+						set player's gamemode to {@gamemode}
+						reset player's walk speed
+						reset player's fly speed
+						teleport player to {intro.spawn}
+						
+				else:
+					set player's gamemode to {@gamemode}
+					reset player's walk speed
+					reset player's fly speed
+					teleport player to {intro.spawn}
+
+
+			else:
+				stop
+	
+	
+	
+	
+	
+	
+	
+	
+command /intro [<text>] [<text>]:
+	trigger:
+		if arg-1 is "reset":
+			if arg-2 is not set:
+				send "{@spielermsg}"
+			else:
+				set {_p} to arg-2 parsed as player
+				if {_p} is not online:
+					send "{@onlinemsg}"
+				else:
+					clear {einfuehrung.%arg-2%}
+					send "{@resetmsg}"
+					execute console command "superkick %arg-2%"
+		
+		
+		
+		
+		
+		if arg-1 is "setloc":
+			if arg-2 is not set:
+				send "{@numbermsg}"
+			if arg-2 is "1":
+				set {loc1} to location of player
+				send "{@locmsg}"
+			if arg-2 is "2":
+				set {loc2} to location of player
+				send "{@locmsg}"
+			if arg-2 is "3":
+				set {loc3} to location of player
+				send "{@locmsg}"
+			if arg-2 is "4":
+				set {loc4} to location of player
+				send "{@locmsg}"
+		
+		
+		
+		
+		
+		
+		if arg-1 is "rmloc":
+			if arg-2 is not set:
+				send "{@numbermsg}"
+			if arg-2 is "1":
+				clear {loc1}
+				send "{@rmmsg}"
+			if arg-2 is "2":
+				clear {loc1}
+				send "{@rmmsg}"
+			if arg-2 is "3":
+				clear {loc1}
+				send "{@rmmsg}"
+			if arg-2 is "4":
+				clear {loc1}
+				send "{@rmmsg}"
+		
+		if arg-1 is "help":
+			send "&b&m--------------------------"
+			send "&6/intro setloc <nummer> &8| &7Setzt die Locations"
+			send "&6/intro reset <spieler> &8| &7Resettet das Intro eines Spielers"
+			send "&6/intro rmloc <nummer> &8| &7Entfernt die Locations"
+			send "&6/intro help <nummer> &8| &7Zeigt diese Nachricht"
+			send "&6/intro setspawn &8| &7Setze den Spawn"
+			send "&b&m--------------------------" 
+			
+		if arg-1 is not set:
+			execute player command "intro help"
+			
+			
+		if arg-1 is "setspawn":
+			set {intro.spawn} to location of player
+			send "{@setmsg}"
+	
+	
+	
+		
+
+
+
+command /superkick <player>:
+	permission: superkick
+	trigger:
+		kick the arg-1 due to "&c{@kick1}%nl%&b{@kick2}"
+
+
